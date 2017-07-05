@@ -1,0 +1,4 @@
+4.991643541 0.0611401 ic342_cband_cont_if1_cal_v2_8chanavg_r0_selfcal_v3_ckauvlim.image.tt0.imsmooth
+6.79035     0.0515986 ic342_cband_cont_if2_cal_8chanavg_r0_selfcal_v3_ckauvlim.image.tt0.imsmooth
+32.913      0.0289864 ic342_if2_cont_v3_r2_selfcal_ckauvlim_r2.image.imsmooth
+34.6571     0.0286208 ic342_if1_cont_v3_r2_selfcal_ckauvlim_r2.image.imsmooth

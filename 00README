@@ -1,0 +1,123 @@
+======================================================================
+HII Region Modelling Software
+Trey Wenger - May/June 2016
+Based of IDL code by Amanda Kepley
+======================================================================
+
+This code allows you to fit HII region models to observed radio
+recombination line and radio continuum data. See 00EXAMPLES for 
+detailed examples on how to run the code.
+
+======================================================================
+
+Programs:
+utils.py            - general utilities for calculating properties 
+                      of HII regions
+tests.py            - test routines to compare utils.py calculations
+                      against by-hand calculations and associated
+                      IDL functions
+departure_coeffs.py - utility to call BSBN program and generate
+                      departure coefficients
+hii_region_model.py - class definition for HII region object
+fit_model.py        - main program to fit HII region model to observed
+                      radio recombinaton line (RRL) and radio 
+                      continuum data
+plot_model.py       - plots fitted model(s) over observed data
+bsbn.f              - routine to calculate departure coefficients
+call_bsbn.f         - wrapper routine to call bsbn.f
+
+======================================================================
+
+Run the tests:
+
+The first thing you should do on a new installation is run the tests.
+$ python tests.py
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.067s
+
+OK
+
+======================================================================
+
+Data format:
+
+The RRL data file requires the following space delimited format. 
+Semi-colons indicate lines that are to be ignored (i.e. comments)
+
+; freq nn S_L_peak error FWHM error V_0  error S_int    error    S_int    error    Bmaj   Bmin
+; GHz     mJy      mJy   km/s km/s  km/s km/s  mJy.km/s mJy.km/s W m^{-2} W m^{-2} arcsec arcsec
+
+where
+      freq     = observed frequency
+      nn       = line lower energy level
+      S_L_peak = peak flux density
+      FWHM     = line full width at half maximum
+      V0       = line center velocity
+      S_int    = line flux
+      Bmaj     = beam major axis
+      Bmin     = beam minor axis
+and "error" indicates associated errors.
+
+The radio continuum data file requires the following space delimited
+format.
+
+; freq S_C error
+; GHz  Jy  Jy   
+
+where
+      freq = observed frequency
+      S_C  = continuum flux density
+and "error" indicates associated errors.
+
+======================================================================
+
+Notes on BSBN from AAK:
+
+The routine bsbn.f is a routine for calculating the departure
+coefficients and betas to correct for the non-LTE effects. It can be
+run alone. It is very similar to the routine listed in Appendix E.1 of
+Radio Recombination Lines: Their Physics and Astronomical Applications
+by Gordon and Sorochenko (I have the 2009 paperback version). This
+code in turn is based on an original code to compute the departure
+coefficients by Salem and Brocklehurst. The relevant citations here
+are:
+
+        Salem and Brocklehurst (1979). ApJSS, 39:633-651.
+        Brocklehurst and Salem (1977). Computer Physics Communications, 13:39-48
+
+According to Gordon and Sorochenko, this code should be good to about
+H40. If going below that you should use Storey and Hummer (1995),
+MNRAS, 272, 41.
+
+I added the changes detailed in Appendix E of Gordon and Sorochenko in
+order to calculate the lower transitions. The second block of bsbn.inp
+lists the pivot points, which I believe are the points between which
+the code interpolates. I double-checked the code and I'm getting the
+same results as in the Appendix, similar results to Walmsley (1990)
+and also similar results to Salem and Brocklehurst (1979) so I think
+things are working right.
+
+To compile bsbn:
+
+ifort -noautomatic -o call_bsbn.o bsbn.f call_bsbn.f
+
+The -noautomatic option in ifort is needed because some of the
+routines depend on values saved between runs. In particular, the cons
+variable in colion was not being saved between runs.
+
+NRAO doesn't have ifort, but it may also be possible to compile using
+another fortran compiler. However, the binary in the repository works
+fine on the GBT machines.
+
+The file fort.3 needs to exist for bsbn to run. As far as I can tell
+there's nothing in it and the unit=3 input is from bsbn.inp. As far as
+I can tell there shouldn't be a need for it, but that might have
+something to do with the 'old' specification on bsbn or on later calls
+to cor, which is the only subroutine it's used in.
+
+Notes from TVW:
+
+ifort is installed on one of the zuul machines at the NRAO, though you
+may need to add it to your path. You can also download it for free 
+using an academic license from the Intel website.

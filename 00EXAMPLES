@@ -1,0 +1,170 @@
+======================================================================
+Example ways to run the HII Region Modelling software
+======================================================================
+
+1. Fit a model to observed data from the command line using default
+   parameters
+
+$ python fit_model.py --help
+
+usage: fit_model.py [-h] --linefile LINEFILE --contfile CONTFILE
+                    --omega_region OMEGA_REGION --distance DISTANCE
+                    [--electron_temps ELECTRON_TEMPS [ELECTRON_TEMPS ...]]
+                    [--electron_dens ELECTRON_DENS [ELECTRON_DENS ...]]
+                    [--HII_region_sizes HII_REGION_SIZES [HII_REGION_SIZES ...]]
+                    [--num_HII_regions NUM_HII_REGIONS [NUM_HII_REGIONS ...]]
+                    [--v_turbulent V_TURBULENT]
+                    [--heII_abundance HEII_ABUNDANCE]
+                    [--heIII_abundance HEIII_ABUNDANCE]
+                    [--n_for_num N_FOR_NUM]
+                    [--fit_lines FIT_LINES [FIT_LINES ...]]
+                    [--background_fluxden BACKGROUND_FLUXDEN] [--use_voigt]
+                    [--line_flux_override LINE_FLUX_OVERRIDE]
+                    [--outfile OUTFILE] [--verbose]
+
+Fit HII region model to observed line and continuum data
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --linefile LINEFILE   file containing line data (default: None)
+  --contfile CONTFILE   file containing continuum data (default: None)
+  --omega_region OMEGA_REGION
+                        solid angle of region used to extract line and
+                        continuum data (sq arcsec) (default: None)
+  --distance DISTANCE   distance to object (Mpc) (default: None)
+  --electron_temps ELECTRON_TEMPS [ELECTRON_TEMPS ...]
+                        model electron temperatures to try in fit (K)
+                        (default: [5000.0, 7000.0, 10000.0])
+  --electron_dens ELECTRON_DENS [ELECTRON_DENS ...]
+                        model electron densities to try in fit (cm-3)
+                        (default: [10.0, 100.0, 1000.0])
+  --HII_region_sizes HII_REGION_SIZES [HII_REGION_SIZES ...]
+                        model HII region sizes to try in fit (pc) (default:
+                        [0.1, 1.0, 10.0])
+  --num_HII_regions NUM_HII_REGIONS [NUM_HII_REGIONS ...]
+                        model number of HII regions to try in fit. If not
+                        supplied, number of HII regions is estimated from the
+                        data (default: [None])
+  --v_turbulent V_TURBULENT
+                        model turbulent velocity (km/s) (default: 0.0)
+  --heII_abundance HEII_ABUNDANCE
+                        abundance of singly-ionized helium (default: 0.0)
+  --heIII_abundance HEIII_ABUNDANCE
+                        abundance of doubly-ionized helium (default: 0.0)
+  --n_for_num N_FOR_NUM
+                        the observed RRL transition to use in estimating the
+                        model number of HII regions (i.e. if num_HII_regions
+                        is [None]) (default: 58)
+  --fit_lines FIT_LINES [FIT_LINES ...]
+                        the observed RRL transitions to use in fitting the
+                        model. If empty, use all observed RRL transitions
+                        (default: [])
+  --background_fluxden BACKGROUND_FLUXDEN
+                        model background continuum flux density (mJy)
+                        (default: 0.0)
+  --use_voigt           use a voigt profile model instead of Gaussian profile
+                        (default) (default: False)
+  --line_flux_override LINE_FLUX_OVERRIDE
+                        if set, use this RRL flux in estimating the model
+                        number of HII regions (W/m2) (i.e. if num_HII_regions
+                        is [None] (default: None)
+  --outfile OUTFILE     output pickle file to save best fit model (default:
+                        best_model.pkl)
+  --verbose             print info on why a model is rejected during model
+                        checks (default: False)
+
+$ python fit_model.py --linefile whole_nucleus_v2_all_line.txt --contfile whole_nucleus_v2_all_cont.txt --omega_region 53.7500 --distance 3.280
+
+Ran 27 models in 00h 00m 0.83s
+00h 00m 0.03s per model
+0 models passed, 27 models failed
+
+N.B. it seems the default parameters aren't a good set to use!
+
+======================================================================
+
+2. Fit a model to observed data from the IPython shell using different
+   model parameters
+
+$ ipython
+In [1]: import fit_model
+In [2]: import numpy as np
+In [3]: linefile = 'whole_nucleus_v2_all_line.txt'
+In [4]: contfile = 'whole_nucleus_v2_all_cont.txt'
+In [5]: omega_region = 53.7500 # sq arcsec
+In [6]: distance = 3.280 # Mpc
+In [7]: electron_temps = np.linspace(1000.,10000.,99) # 1000 K to 10000 K
+In [8]: electron_dens = np.logspace(-1.,3.,19.) # 0.1 cm-3 to 1000 cm-3
+In [9]: HII_region_sizes = np.logspace(-1.,3.,19.) # 0.1 pc to 1000 pc
+In [10]: help(fit_model.fit_model)
+
+Help on function fit_model in module fit_model:
+
+fit_model(linefile, contfile, omega_region, distance, electron_temps=[5000.0, 7000.0, 10000.0], electron_dens=[10.0, 100.0, 1000.0], HII_region_sizes=[0.1, 1.0, 10.0], num_HII_regions=[None], v_turbulent=0.0, heII_abundance=0.0, heIII_abundance=0.0, n_for_num=58, fit_lines=[], background_fluxden=0.0, use_voigt=False, line_flux_override=None, outfile='best_model.pkl', verbose=False)
+    Fit the best HII region model to the data in linefile and contfile
+    using the above parameters and grid values.
+    
+    Inputs:
+      linefile  = filename where line data is saved (see read_line_data)
+      contfile  = filename where continuum data is saved (see read_cont_data)
+      outfile   = file in which to save best fit model
+    
+    The following input parameters define properties that are the
+    same for all models
+      omega_region    = solid angle of CASA region used to extract (arcsec2)
+      distance        = distance to object (Mpc)
+      v_turbulent     = turbulent velocity (km/s)
+      heII_abundance  = abundance of singly ionized helium relative
+                        to singly ionized hydrogen.
+      heIII_abundance = abundance of doubly ionized helium relative
+                        to singly ionized hydrogen.
+      background_fluxden = background continuum flux density (mJy)
+      use_voigt          = if True, use a Voigt profile, otherwise Gaussian
+      fit_lines          = list of lines in linedata to use in model fitting.
+                           if empty: use all lines
+                           i.e. to fit H56 and H102 use fit_lines=[56,102]
+      n_for_num          = line to use for estimating the number of HII regions
+      line_flux_override = use this line flux to estimate number of
+                           HII regions if set (W/m2)
+    
+      verbose            = if True, print out model check info
+    
+    The following four input parameters define the 4-D grid used to
+    fit the model to the data:
+      electron_temp   = list of electron temperatures (K)
+      electron_dens   = list of electron densities (cm-3)
+      HII_region_size = list of linear HII region sizes (pc)
+      num_HII_regions = list of number of HII regions
+                        if [None], estimate the number of HII regions
+                        from the data and the model
+    
+    Returns:
+      best_model = best fit model
+
+In [11]: best_model = fit_model.fit_model(linefile,contfile,
+   ....: omega_region,distance,
+   ....: electron_temps=electron_temps,electron_dens=electron_dens,
+   ....: HII_region_sizes=HII_region_sizes)
+
+Ran 35739 models in 00h 19m 54.73s
+00h 00m 0.03s per model
+244 models passed, 35495 models failed
+Best model RSS: 3.20895400270113e-43
+electron_temp = 1091.8367346938776 K
+electron_dens = 77.4263682681127 cm-3
+HII_region_size = 10.0 pc
+num_HII_regions = 105.48271452189125
+
+======================================================================
+
+3. Plotting single model
+
+python plot_model.py best_model.pkl
+
+======================================================================
+
+4. Plotting two models with labels
+
+python plot_model.py model1.pkl model2.pkl --labels "Model 1" "Model 2"
+
+======================================================================

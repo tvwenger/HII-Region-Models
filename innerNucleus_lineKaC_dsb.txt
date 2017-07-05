@@ -1,0 +1,8 @@
+; freq       nn   S_L_peak       error     FWHM   error         V_0     error   S_int     error    S_int     error       Bmaj   Bmin
+; GHz              mJy           mJy       km/s    km/s         km/s    km/s    mJy.km/s  mJy.km/s W m^{-2}  W m^{-2}   arcsec arcsec
+; ------------------------------------------------------------------------------------------------------------------------------------
+ 34.596       57  4.396e-01 3.339e-02  1.101e+02 9.654e+00  2.971e+01 4.100e+00  5.149e+01 5.974e+00 5.942e-23 6.894e-24 4.500 4.500 
+; freq       nn   S_L_peak       error     FWHM   error         V_0     error   S_int     error    S_int     error       Bmaj   Bmin
+; GHz              mJy           mJy       km/s    km/s         km/s    km/s    mJy.km/s  mJy.km/s W m^{-2}  W m^{-2}   arcsec arcsec
+; ------------------------------------------------------------------------------------------------------------------------------------
+  5.763      104  5.940e-02 5.398e-03  9.943e+01 1.043e+01  2.919e+01 4.431e+00  6.285e+00 8.723e-01 1.208e-24 1.677e-25 4.500 4.500 
